@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: Military Communication System
+
+  # H2 in-memory database for development
+  datasource:
+    url: jdbc:h2:mem:militarydb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # PART 4: OAuth2 Google Login
+  # Replace with your real credentials from Google Cloud Console
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id:${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+# PART 2: JWT Configuration
+jwt:
+  # IMPORTANT: In production, set this via environment variable: JWT_SECRET
+  # Never commit real secrets to version control!
+  secret: military-secret-key-must-be-at-least-256-bits-long!!
+  expiration: 900000   # 15 minutes in milliseconds
+
+server:
+  port: 9090
+
+logging:
+  level:
+    com.military.comms: DEBUG
+    org.springframework.security: INFO
